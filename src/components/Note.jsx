@@ -13,7 +13,7 @@ const Note = () => {
         story between the best and strongest man for everyone and the mightiest
         anit-hero?
       </p>
-      <div className="flex justify-end gap-1">
+      <div className="flex justify-end gap-1 mt-2">
         <TrashIcon width={20} className=" text-red-500" />
         <Link to={"/edit/1"}>
           <PencilAltIcon width={20} className=" text-teal-600" />

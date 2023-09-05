@@ -13,7 +13,7 @@ const Details = () => {
         <h3 className=" text-3xl font-medium">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit.
         </h3>
-        <p className=" text-base indent-10 text-justify">
+        <p className=" text-base indent-10 text-justify mt-2">
           What if the last line of the list is what I want to write but not what
           the reader wants to read and the expected moment of the peak to the
           story between the best and strongest man for everyone and the

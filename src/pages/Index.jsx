@@ -7,10 +7,7 @@ const Index = () => {
       <Note />
       <Note />
       <Note />
-      <Note />
-      <Note />
-      <Note />
-      <Note />
+
       <Plus />
     </section>
   );
