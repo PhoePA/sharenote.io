@@ -1,26 +1,29 @@
 import { TrashIcon, PencilAltIcon, EyeIcon } from "@heroicons/react/outline";
-
+import formatISO9075 from "date-fns/formatISO9075";
 import { Link } from "react-router-dom";
-const Note = () => {
+
+const Note = ({ note }) => {
+  const { _id, title, content, createdAt } = note;
+
   return (
     <div className=" w-2/5 border shadow-lg border-t-4 border-t-teal-600 p-3 rounded">
-      <h3 className=" text-xl font-medium">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-      </h3>
-      <p className=" text-sm indent-5 text-justify">
-        What if the last line of the list is what I want to write but not what
-        the reader wants to read and the expected moment of the peak to the
-        story between the best and strongest man for everyone and the mightiest
-        anit-hero?
+      <h3 className=" text-xl text-center font-medium capitalize">{title}</h3>
+      <p className=" text-sm indent-5 mt-2 text-justify">
+        {content.slice(0, 120)}
       </p>
-      <div className="flex justify-end gap-1 mt-2">
-        <TrashIcon width={20} className=" text-red-500" />
-        <Link to={"/edit/1"}>
-          <PencilAltIcon width={20} className=" text-teal-600" />
-        </Link>
-        <Link to={"/notes/1"}>
-          <EyeIcon width={20} className=" text-gray-500" />
-        </Link>
+      <hr className="mt-1"/>
+      <div className="flex justify-between  mt-2">
+        <p>{formatISO9075(new Date(createdAt), { representation: "date" })}</p>
+       
+        <div className="flex items-center  gap-1">
+          <TrashIcon width={20} className=" text-red-500" />
+          <Link to={"/edit/" + _id}>
+            <PencilAltIcon width={20} className=" text-teal-600" />
+          </Link>
+          <Link to={"/notes/" + _id}>
+            <EyeIcon width={20} className=" text-gray-500" />
+          </Link>
+        </div>
       </div>
     </div>
   );
