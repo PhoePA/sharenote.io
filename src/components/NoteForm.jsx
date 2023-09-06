@@ -1,13 +1,17 @@
 import { BackspaceIcon, ArrowSmLeftIcon } from "@heroicons/react/outline";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 //custom error message
 import StyledErrorMessage from "./StyledErrorMessage";
+import { useState } from "react";
 
 const NoteForm = ({ isCreate }) => {
+  const [redirect, setRedirect] = useState(false);
   const initialValues = {
     title: "",
     content: "",
@@ -17,12 +21,12 @@ const NoteForm = ({ isCreate }) => {
     title: Yup.string()
       .trim()
       .min(3, "Title must have at least 3 characters!")
-      .max(20)
+      .max(100)
       .required("Title is required!"),
     content: Yup.string()
       .trim()
       .min(2, "Content must have at least 2 characters!")
-      .max(800)
+      .max(5000)
       .required("Content is required!"),
   });
 
@@ -39,11 +43,51 @@ const NoteForm = ({ isCreate }) => {
   //   return errors;
   // };
 
-  const submitHandler = (values) => {
-    console.log(values);
+  const submitHandler = async (values) => {
+    if (isCreate) {
+      const response = await fetch(`${import.meta.env.VITE_API}/create-notes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+      if (response.status === 201) {
+        setRedirect(true);
+      } else {
+        toast.error("Something Went Wrong!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+    }
   };
+
+  if (redirect) {
+    return <Navigate to={"/"} />;
+  }
+
   return (
     <section>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+
       <div className="flex items-center justify-between mb-7">
         <h1 className=" text-2xl font-bold">
           {isCreate ? "Create a New Note!" : "Edit Your Note!"}
