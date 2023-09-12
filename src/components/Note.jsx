@@ -26,7 +26,7 @@ const Note = ({ note, getNotes, customAlert }) => {
       <h3 className=" text-xl text-center font-medium capitalize">
         {title.slice(0, 21)}
       </h3>
-      <p className=" text-sm indent-5 mt-2 text-justify ">
+      <p className=" text-sm indent-5 mt-2 text-justify break-words">
         {content.slice(0, 150)}...
       </p>
       <hr className="mt-1" />

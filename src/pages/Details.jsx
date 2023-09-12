@@ -35,7 +35,18 @@ const Details = () => {
               Back
             </Link>
             <div className=" border shadow-lg border-t-4 border-t-teal-600 p-3 mt-5 rounded">
-              <p className="text-center text-4xl font-medium capitalize">{note.title}</p>
+              {note.cover_image && (
+                <div className="mb-5">
+                  <img
+                    src={`${import.meta.env.VITE_API}/${note.cover_image}`}
+                    alt={note.title}
+                    className="h-full w-4/6 m-auto"
+                  />
+                </div>
+              )}
+              <p className="text-center text-4xl font-medium capitalize">
+                {note.title}
+              </p>
               <div className="flex justify-between mt-3">
                 <div className="flex  items-center gap-1">
                   <UserCircleIcon className="w-4 h-4 text-teal-600" />

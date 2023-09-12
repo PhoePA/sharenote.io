@@ -8,12 +8,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 //custom error message
 import StyledErrorMessage from "./StyledErrorMessage";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const NoteForm = ({ isCreate }) => {
   const [redirect, setRedirect] = useState(false);
   const [oldNote, setOldNote] = useState({});
-
+  const [previewImg, setPreviewImg] = useState(null);
+  const fileRef = useRef();
   const { id } = useParams();
 
   const getOldNote = async () => {
@@ -38,7 +39,10 @@ const NoteForm = ({ isCreate }) => {
     title: isCreate ? "" : oldNote.title,
     content: isCreate ? "" : oldNote.content,
     note_id: isCreate ? "" : oldNote._id,
+    cover_image: isCreate ? null : oldNote.cover_image,
   };
+
+  const SUPPORTED_FORMATS = ["image/png", "image/jpg", "image/jpeg"];
 
   const NoteFormSchema = Yup.object({
     title: Yup.string()
@@ -51,6 +55,13 @@ const NoteForm = ({ isCreate }) => {
       .min(2, "Content must have at least 2 characters!")
       .max(5000)
       .required("Content is required!"),
+    cover_image: Yup.mixed()
+      .nullable()
+      .test(
+        "FILE_FORMAT",
+        "File Type is not Supported",
+        (value) => !value || SUPPORTED_FORMATS.includes(value.type)
+      ),
   });
 
   // validation from formik
@@ -66,6 +77,19 @@ const NoteForm = ({ isCreate }) => {
   //   return errors;
   // };
 
+  const handleImageChange = (event, setFieldValue) => {
+    const selectedImage = event.target.files[0];
+    if (selectedImage) {
+      setPreviewImg(URL.createObjectURL(selectedImage));
+      setFieldValue("cover_image", selectedImage);
+    }
+  };
+
+  const clearPreviewImg = (setFieldValue) => {
+    setPreviewImg(null);
+    setFieldValue("cover_image", null);
+  };
+
   const submitHandler = async (values) => {
     let API = `${import.meta.env.VITE_API}`;
     let method;
@@ -77,28 +101,31 @@ const NoteForm = ({ isCreate }) => {
       method = "PUT";
     }
 
-      const response = await fetch(API, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
+    const formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("content", values.content);
+    formData.append("cover_image", values.cover_image);
+    formData.append("note_id", values.note_id);
+
+    const response = await fetch(API, {
+      method,
+      body: formData,
+    });
+
+    if (response.status === 201 || response.status === 200) {
+      setRedirect(true);
+    } else {
+      toast.error("Something Went Wrong!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
       });
-      if (response.status === 201 || response.status === 200) {
-        setRedirect(true);
-      } else {
-        toast.error("Something Went Wrong!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      }
- 
+    }
   };
 
   if (redirect) {
@@ -134,8 +161,8 @@ const NoteForm = ({ isCreate }) => {
         onSubmit={submitHandler}
         enableReinitialize={true}
       >
-        {({ errors, touched }) => (
-          <Form action="#">
+        {({ errors, touched, values, setFieldValue }) => (
+          <Form  encType="multipart/form-data">
             <div className="">
               <label htmlFor="title" className="font-medium block mb-1">
                 Note Title
@@ -150,6 +177,7 @@ const NoteForm = ({ isCreate }) => {
               {/* <ErrorMessage name="title" /> no need ErrorMessage if Yup is used*/}
               <StyledErrorMessage name="title" />
             </div>
+
             <div className="">
               <label htmlFor="content" className="font-medium block mb-1">
                 Note Description
@@ -166,7 +194,64 @@ const NoteForm = ({ isCreate }) => {
               {/* <ErrorMessage name="content" /> */}
               <StyledErrorMessage name="content" />
             </div>
-            <Field type="text" name="note_id" id="note_id" hidden />
+            <div className="">
+              <div className="flex justify-between">
+                <label htmlFor="Image" className="font-medium block mb-1">
+                  Cover Image{" "}
+                  <span className="text-xs font-medium">(Optional)</span>
+                </label>
+                {previewImg && (
+                  <p
+                    className=" cursor-pointer text-teal-600"
+                    onClick={() => {
+                      clearPreviewImg(setFieldValue);
+                    }}
+                  >
+                    Clear
+                  </p>
+                )}
+              </div>
+              <input
+                type="file"
+                name="cover_image"
+                className="mb-3"
+                hidden
+                ref={fileRef}
+                onChange={(event) => {
+                  handleImageChange(event, setFieldValue);
+                }}
+              />
+              <div
+                className=" border border-dashed border-teal-600 flex justify-center items-center h-60 cursor-pointer rounded-lg relative overflow-hidden"
+                onClick={() => {
+                  fileRef.current.click();
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6 z-20"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+                  />
+                </svg>
+                {previewImg && (
+                  <img
+                    src={previewImg}
+                    alt={"preview"}
+                    className="absolute opacity-50 h-full object-cover z-10"
+                  />
+                )}
+              </div>
+            </div>
+            <StyledErrorMessage name="cover_image" />
+            {/* <Field type="text" name="note_id" id="note_id" hidden /> */}
             <div className="flex gap-2">
               <button
                 type="button"
