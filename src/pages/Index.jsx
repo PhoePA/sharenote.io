@@ -8,20 +8,35 @@ import "react-toastify/dist/ReactToastify.css";
 const Index = () => {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const getNotes = async () => {
+  const getNotes = async (pageNum) => {
     setLoading(true);
 
-    const response = await fetch(`${import.meta.env.VITE_API}/notes`);
-    const notes = await response.json();
+    const response = await fetch(`${import.meta.env.VITE_API}/notes?page=${pageNum}`);
+    const { notes, totalNotes, totalPages } = await response.json();
+    setTotalPages(totalPages);
     setNotes(notes);
 
     setLoading(false);
   };
 
   useEffect(() => {
-    getNotes();
-  }, []);
+    getNotes(currentPage);
+  }, [currentPage]);
+
+  const handlePre = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   const customAlert = (message) => {
     toast.success(message, {
@@ -48,6 +63,26 @@ const Index = () => {
               customAlert={customAlert}
             />
           ))}
+          <div className="w-full flex items-center justify-center gap-3">
+            {currentPage > 1 && (
+              <button
+                type="button"
+                className="bg-teal-600 p-2 text-white rounded"
+                onClick={handlePre}
+              >
+                Previous Page
+              </button>
+            )}
+            {currentPage < totalPages && (
+              <button
+                type="button"
+                className="bg-teal-600 p-2 text-white rounded"
+                onClick={handleNext}
+              >
+                Next Page
+              </button>
+            )}
+          </div>
         </>
       ) : (
         <div className="flex flex-col justify-center items-center m-auto">
