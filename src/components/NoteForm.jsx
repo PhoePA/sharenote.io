@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { BackspaceIcon, ArrowSmLeftIcon } from "@heroicons/react/outline";
 import { Link, Navigate, useParams } from "react-router-dom";
 
@@ -8,12 +9,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 //custom error message
 import StyledErrorMessage from "./StyledErrorMessage";
-import { useEffect, useRef, useState } from "react";
 
 const NoteForm = ({ isCreate }) => {
   const [redirect, setRedirect] = useState(false);
   const [oldNote, setOldNote] = useState({});
   const [previewImg, setPreviewImg] = useState(null);
+  const [isUpload, setIsUpload] = useState(false);
   const fileRef = useRef();
   const { id } = useParams();
 
@@ -88,6 +89,8 @@ const NoteForm = ({ isCreate }) => {
   const clearPreviewImg = (setFieldValue) => {
     setPreviewImg(null);
     setFieldValue("cover_image", null);
+
+    fileRef.current.value = "";
   };
 
   const submitHandler = async (values) => {
@@ -162,7 +165,7 @@ const NoteForm = ({ isCreate }) => {
         enableReinitialize={true}
       >
         {({ errors, touched, values, setFieldValue }) => (
-          <Form  encType="multipart/form-data">
+          <Form encType="multipart/form-data">
             <div className="">
               <label htmlFor="title" className="font-medium block mb-1">
                 Note Title
@@ -196,10 +199,11 @@ const NoteForm = ({ isCreate }) => {
             </div>
             <div className="">
               <div className="flex justify-between">
-                <label htmlFor="Image" className="font-medium block mb-1">
+                <label htmlFor="cover_image" className="font-medium block mb-1">
                   Cover Image{" "}
                   <span className="text-xs font-medium">(Optional)</span>
                 </label>
+
                 {previewImg && (
                   <p
                     className=" cursor-pointer text-teal-600"
@@ -211,44 +215,81 @@ const NoteForm = ({ isCreate }) => {
                   </p>
                 )}
               </div>
-              <input
-                type="file"
-                name="cover_image"
-                className="mb-3"
-                hidden
-                ref={fileRef}
-                onChange={(event) => {
-                  handleImageChange(event, setFieldValue);
-                }}
-              />
-              <div
-                className=" border border-dashed border-teal-600 flex justify-center items-center h-60 cursor-pointer rounded-lg relative overflow-hidden"
-                onClick={() => {
-                  fileRef.current.click();
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6 z-20"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
-                  />
-                </svg>
-                {previewImg && (
-                  <img
-                    src={previewImg}
-                    alt={"preview"}
-                    className="absolute opacity-50 h-full object-cover z-10"
-                  />
+          
+                {isUpload ? (
+                  <p
+                    className=" cursor-pointer text-teal-600 mb-2 text-xs"
+                    onClick={() => setIsUpload(false)}
+                  >
+                    Disable Cover Image
+                  </p>
+                ) : (
+                  <p
+                    className=" cursor-pointer text-teal-600"
+                    onClick={() => setIsUpload(true)}
+                  >
+                    Upload Cover Image
+                  </p>
                 )}
-              </div>
+            
+              {isUpload && (
+                <>
+                  <input
+                    type="file"
+                    name="cover_image"
+                    className="mb-3"
+                    hidden
+                    ref={fileRef}
+                    onChange={(event) => {
+                      handleImageChange(event, setFieldValue);
+                    }}
+                  />
+                  <div
+                    className=" border border-dashed border-teal-600 flex justify-center items-center h-60 cursor-pointer rounded-lg relative overflow-hidden"
+                    onClick={() => {
+                      fileRef.current.click();
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6 z-20"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+                      />
+                    </svg>
+                    {isCreate ? (
+                      <>
+                        {previewImg && (
+                          <img
+                            src={previewImg}
+                            alt={"preview"}
+                            className="absolute opacity-50 h-full object-cover z-10"
+                          />
+                        )}
+                      </>
+                    ) : (
+                      <img
+                        src={
+                          previewImg
+                            ? previewImg
+                            : `${import.meta.env.VITE_API}/${
+                                oldNote.cover_image
+                              }`
+                        }
+                        alt={"preview"}
+                        className="absolute opacity-50 h-full object-cover z-10"
+                      />
+                    )}
+                  </div>
+                </>
+              )}
             </div>
             <StyledErrorMessage name="cover_image" />
             {/* <Field type="text" name="note_id" id="note_id" hidden /> */}
