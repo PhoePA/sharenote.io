@@ -150,12 +150,15 @@ const NoteForm = ({ isCreate }) => {
         theme="colored"
       />
 
-      <div className="flex items-center justify-between mb-7">
-        <h1 className=" text-2xl font-bold">
+      <div className="flex items-center justify-between mb-5">
+        <h1 className=" text-2xl font-bold text-teal-600">
           {isCreate ? "Create a New Note!" : "Edit Your Note!"}
         </h1>
-        <Link to={"/"}>
-          <ArrowSmLeftIcon width={30} height={40} />
+        <Link
+          to={"/"}
+          className="flex justify-end items-center text-teal-600 font-medium"
+        >
+          <ArrowSmLeftIcon width={30} height={40} /> Back
         </Link>
       </div>
       <Formik
@@ -165,9 +168,15 @@ const NoteForm = ({ isCreate }) => {
         enableReinitialize={true}
       >
         {({ errors, touched, values, setFieldValue }) => (
-          <Form encType="multipart/form-data">
+          <Form
+            encType="multipart/form-data"
+            className="border p-2 bg-gray-100 rounded-md"
+          >
             <div className="">
-              <label htmlFor="title" className="font-medium block mb-1">
+              <label
+                htmlFor="title"
+                className="font-medium block mb-1 text-teal-600"
+              >
                 Note Title
               </label>
               <Field
@@ -182,7 +191,10 @@ const NoteForm = ({ isCreate }) => {
             </div>
 
             <div className="">
-              <label htmlFor="content" className="font-medium block mb-1">
+              <label
+                htmlFor="content"
+                className="font-medium block mb-1 text-teal-600"
+              >
                 Note Description
               </label>
               <Field
@@ -199,7 +211,10 @@ const NoteForm = ({ isCreate }) => {
             </div>
             <div className="">
               <div className="flex justify-between">
-                <label htmlFor="cover_image" className="font-medium block mb-1">
+                <label
+                  htmlFor="cover_image"
+                  className="font-medium block mb-1 text-teal-600"
+                >
                   Cover Image{" "}
                   <span className="text-xs font-medium">(Optional)</span>
                 </label>
@@ -215,23 +230,23 @@ const NoteForm = ({ isCreate }) => {
                   </p>
                 )}
               </div>
-          
-                {isUpload ? (
-                  <p
-                    className=" cursor-pointer text-teal-600 mb-2 text-xs"
-                    onClick={() => setIsUpload(false)}
-                  >
-                    Disable Cover Image
-                  </p>
-                ) : (
-                  <p
-                    className=" cursor-pointer text-teal-600"
-                    onClick={() => setIsUpload(true)}
-                  >
-                    Upload Cover Image
-                  </p>
-                )}
-            
+
+              {isUpload ? (
+                <p
+                  className=" cursor-pointer text-teal-600 mb-2 text-xs"
+                  onClick={() => setIsUpload(false)}
+                >
+                  Disable Cover Image
+                </p>
+              ) : (
+                <p
+                  className=" cursor-pointer text-teal-600"
+                  onClick={() => setIsUpload(true)}
+                >
+                  Upload Cover Image
+                </p>
+              )}
+
               {isUpload && (
                 <>
                   <input

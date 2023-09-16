@@ -1,4 +1,8 @@
-import { CalendarIcon, UserCircleIcon } from "@heroicons/react/outline";
+import {
+  ArrowSmLeftIcon,
+  CalendarIcon,
+  UserCircleIcon,
+} from "@heroicons/react/outline";
 import { useEffect, useState } from "react";
 import { Hourglass } from "react-loader-spinner";
 import { Link, useParams } from "react-router-dom";
@@ -30,10 +34,11 @@ const Details = () => {
           <div>
             <Link
               to={"/"}
-              className=" text-teal-600 font-medium mx-4 block text-right"
+              className="flex justify-end items-center text-teal-600 font-medium"
             >
-              Back
+              <ArrowSmLeftIcon width={30} height={40} /> Back
             </Link>
+
             <div className=" border shadow-lg border-t-4 border-t-teal-600 p-3 mt-5 rounded">
               {note.cover_image && (
                 <div className="mb-5">

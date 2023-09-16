@@ -11,12 +11,17 @@ const Nav = () => {
             ShareNote.io
           </h1>
         </Link>
-
-        <Link to={"/create"} className="object-center w-10 h-10">
-          <button className="float-right bg-teal-800 p-2 rounded text-white">
-            Share
-          </button>
-        </Link>
+        <div className="flex gap-3">
+          <Link to={"/create"} className="object-center my-2">
+            <button className=" text-teal-600">Share</button>
+          </Link>
+          <Link to={"/login"} className="object-center my-2">
+            <button className=" text-teal-600">Login</button>
+          </Link>
+          <Link to={"/register"} className="object-center my-2">
+            <button className=" text-teal-600">Register</button>
+          </Link>
+        </div>
       </div>
     </nav>
   );
