@@ -20,11 +20,13 @@ const AuthForm = ({ isLogin }) => {
   };
 
   const AuthFormSchema = Yup.object({
-    username: Yup.string()
-      .trim()
-      .min(3, "Username is too Short!")
-      .max(20, "Username is too Long")
-      .required("Username is required!"),
+    username: isLogin
+      ? null
+      : Yup.string()
+          .trim()
+          .min(3, "Username is too Short!")
+          .max(20, "Username is too Long")
+          .required("Username is required!"),
     email: Yup.string()
       .trim()
       .required("Email is required!")
@@ -39,37 +41,45 @@ const AuthForm = ({ isLogin }) => {
   const submitHandler = async (values) => {
     const { username, email, password } = values;
 
+    let END_POINT = `${import.meta.env.VITE_API}/register`;
+
     if (isLogin) {
-      // login codes
-    } else {
-      const response = await fetch(`${import.meta.env.VITE_API}/register`, {
-        method: "POST",
-        body: JSON.stringify({ username, email, password }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+      END_POINT = `${import.meta.env.VITE_API}/login`;
+    }
+    const response = await fetch(END_POINT, {
+      method: "POST",
+      body: JSON.stringify({ username, email, password }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const toastFire = (message) => {
+      toast.error(message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
       });
-      if (response.status === 201) {
-        setRedirect(true);
-      } else if (response.status === 400) {
-        const data = await response.json();
-        const pickedErrorMessage = data.errorMessages[0].msg;
-        toast.error(pickedErrorMessage, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      }
+    };
+
+    const responseData = await response.json();
+    if (response.status === 201 || response.status === 200) {
+      setRedirect(true);
+    } else if (response.status === 400) {
+      const pickedErrorMessage = responseData.errorMessages[0].msg;
+      toastFire(pickedErrorMessage);
+    } else if (response.status === 401) {
+      toastFire(responseData.message);
     }
   };
 
   if (redirect) {
-    return <Navigate to={"/"} />;
+    return <Navigate to={isLogin ? "/" : "/login"} />;
   }
 
   return (
@@ -103,7 +113,10 @@ const AuthForm = ({ isLogin }) => {
             </div>
             {!isLogin && (
               <div className="">
-                <label htmlFor="username" className="font-medium block mb-1 text-teal-600">
+                <label
+                  htmlFor="username"
+                  className="font-medium block mb-1 text-teal-600"
+                >
                   Username
                 </label>
 
@@ -118,7 +131,10 @@ const AuthForm = ({ isLogin }) => {
               </div>
             )}
             <div className="">
-              <label htmlFor="email" className="font-medium block mb-1 text-teal-600">
+              <label
+                htmlFor="email"
+                className="font-medium block mb-1 text-teal-600"
+              >
                 Email
               </label>
               <Field
@@ -131,7 +147,10 @@ const AuthForm = ({ isLogin }) => {
               <StyledErrorMessage name="email" />
             </div>
             <div className="">
-              <label htmlFor="password" className="font-medium block mb-1 text-teal-600">
+              <label
+                htmlFor="password"
+                className="font-medium block mb-1 text-teal-600"
+              >
                 Password
               </label>
               <Field

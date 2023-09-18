@@ -22,7 +22,7 @@ const Note = ({ note, getNotes, customAlert }) => {
   };
 
   return (
-    <div className=" w-96 border shadow-lg border-t-4 border-t-teal-600 p-3 rounded h-44">
+    <div className=" w-1/3 border shadow-lg border-t-4 border-t-teal-600 p-3 rounded h-fit">
       <h3 className=" text-xl text-center font-medium capitalize">
         {title.slice(0, 21)}
       </h3>

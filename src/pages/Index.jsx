@@ -95,7 +95,7 @@ const Index = () => {
         theme="colored"
       />
       <Plus />
-      <div className="w-full flex items-center justify-center gap-20 fixed bottom-10 right-1">
+      <div className="w-full flex items-center justify-center gap-20  right-1">
         {currentPage > 1 && (
           <button
             type="button"
