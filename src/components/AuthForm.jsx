@@ -8,9 +8,12 @@ import "react-toastify/dist/ReactToastify.css";
 import StyledErrorMessage from "./StyledErrorMessage";
 import { ArrowSmLeftIcon, BackspaceIcon } from "@heroicons/react/outline";
 import { Link, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
+
+import { UserContext } from "../contexts/UserContext";
 
 const AuthForm = ({ isLogin }) => {
+  const { setToken } = useContext(UserContext);
   const [redirect, setRedirect] = useState(false);
 
   const initialValues = {
@@ -68,7 +71,11 @@ const AuthForm = ({ isLogin }) => {
     };
 
     const responseData = await response.json();
-    if (response.status === 201 || response.status === 200) {
+    // console.log(responseData);
+    if (response.status === 201) {
+      setRedirect(true);
+    } else if (response.status === 200) {
+      setToken(responseData);
       setRedirect(true);
     } else if (response.status === 400) {
       const pickedErrorMessage = responseData.errorMessages[0].msg;

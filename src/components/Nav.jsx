@@ -1,7 +1,10 @@
 import { BookmarkAltIcon } from "@heroicons/react/outline";
+import { UserContext } from "../contexts/UserContext";
 
 import { Link } from "react-router-dom";
+import { useContext } from "react";
 const Nav = () => {
+  const { token } = useContext(UserContext);
   return (
     <nav className=" bg-slate-200 py-4 px-10">
       <div className="flex justify-between">
@@ -12,15 +15,22 @@ const Nav = () => {
           </h1>
         </Link>
         <div className="flex gap-3">
-          <Link to={"/create"} className="object-center my-2">
-            <button className=" text-teal-600">Share</button>
-          </Link>
-          <Link to={"/login"} className="object-center my-2">
-            <button className=" text-teal-600">Login</button>
-          </Link>
-          <Link to={"/register"} className="object-center my-2">
-            <button className=" text-teal-600">Register</button>
-          </Link>
+          {token ? (
+            <>
+              <Link to={"/create"} className="object-center my-2">
+                <button className=" text-teal-600">SHARE NOTE</button>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to={"/login"} className="object-center my-2">
+                <button className=" text-teal-600">Login</button>
+              </Link>
+              <Link to={"/register"} className="object-center my-2">
+                <button className=" text-teal-600">Register</button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
