@@ -53,10 +53,12 @@ const Details = () => {
                 {note.title}
               </p>
               <div className="flex justify-between mt-3">
-                <div className="flex  items-center gap-1">
-                  <UserCircleIcon className="w-4 h-4 text-teal-600" />
-                  <h5>{note.author}</h5>
-                </div>
+                {note.author && (
+                  <div className="flex  items-center gap-1">
+                    <UserCircleIcon className="w-4 h-4 text-teal-600" />
+                    <h5>{note.author.username}</h5>
+                  </div>
+                )}
                 <div className="flex items-center gap-1">
                   <CalendarIcon className="w-4 h-4 text-red-600" />
                   {detailedDate}
