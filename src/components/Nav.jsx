@@ -5,7 +5,9 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import Plus from "../components/Plus";
 const Nav = () => {
-  const { token, updateToken } = useContext(UserContext);
+  // const token = localStorage.getItem("token");
+  // console.log(token);
+  const {token,  updateToken } = useContext(UserContext);
 
   const logoutHandler = () => {
     updateToken(null);
@@ -21,7 +23,7 @@ const Nav = () => {
           </h1>
         </Link>
         <div className="flex flex-col gap-3 justify-end items-end">
-          {token ? (
+          {token? (
             <>
               <div className="flex gap-2">
                 <Link to={"/create"} className="object-center">

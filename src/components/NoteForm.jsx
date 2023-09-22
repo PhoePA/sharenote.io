@@ -177,7 +177,7 @@ const NoteForm = ({ isCreate }) => {
         onSubmit={submitHandler}
         enableReinitialize={true}
       >
-        {({ errors, touched, values, setFieldValue }) => (
+        {({ errors, touched, values, setFieldValue, isSubmitting }) => (
           <Form
             encType="multipart/form-data"
             className="border p-2 bg-gray-100 rounded-md"
@@ -329,9 +329,12 @@ const NoteForm = ({ isCreate }) => {
               </button>
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="text-white bg-teal-600 py-2 font-medium w-full rounded"
               >
-                {isCreate ? "Share Note" : "Save Note"}
+                {isCreate
+                  ? `${isSubmitting ? "Uploading..." : "Share Note"}`
+                  : `${isSubmitting ? "Updating..." : "Save Note"}`}
               </button>
             </div>
           </Form>

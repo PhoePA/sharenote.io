@@ -15,6 +15,7 @@ import { UserContext } from "../contexts/UserContext";
 const AuthForm = ({ isLogin }) => {
   const { updateToken } = useContext(UserContext);
   const [redirect, setRedirect] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   const initialValues = {
     username: "",
@@ -42,6 +43,7 @@ const AuthForm = ({ isLogin }) => {
   });
 
   const submitHandler = async (values) => {
+    // setLoading(true);
     const { username, email, password } = values;
 
     let END_POINT = `${import.meta.env.VITE_API}/register`;
@@ -83,6 +85,7 @@ const AuthForm = ({ isLogin }) => {
     } else if (response.status === 401) {
       toastFire(responseData.message);
     }
+    // setLoading(false);
   };
 
   if (redirect) {
@@ -103,7 +106,7 @@ const AuthForm = ({ isLogin }) => {
         onSubmit={submitHandler}
         validationSchema={AuthFormSchema}
       >
-        {() => (
+        {({ isSubmitting }) => (
           <Form className="w-3/5 mx-auto border p-5 bg-gray-100 rounded-md">
             <div className=" items-center">
               <div>
@@ -180,9 +183,12 @@ const AuthForm = ({ isLogin }) => {
               </button>
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="text-white bg-teal-600 py-2 font-2xl w-full rounded"
               >
-                {isLogin ? "Log In" : "Register"}
+                {isLogin
+                  ? `${isSubmitting ? "Submitting ..." : "Login"}`
+                  : `${isSubmitting ? "Submitting..." : "Register"}`}
               </button>
             </div>
           </Form>

@@ -11,8 +11,29 @@ import { UserContext } from "../contexts/UserContext";
 
 const Note = ({ note, getNotes, customAlert }) => {
   const { token } = useContext(UserContext);
-  const { _id, title, content, createdAt } = note;
+  const { _id, title, content, createdAt, author } = note;
 
+  const handleDeleteNote = async () => {
+    const localToken = JSON.parse(localStorage.getItem("token"));
+
+    if (!localToken) {
+      localStorage.setItem("token", null);
+      window.location.reload(false);
+    }
+
+    const response = await fetch(`${import.meta.env.VITE_API}/status`, {
+      headers: {
+        Authorization: `Bearer ${localToken.token}`,
+      },
+    });
+
+    if (response.status === 401) {
+      localStorage.setItem("token", null);
+      window.location.reload(false);
+    } else {
+      deleteNote();
+    }
+  };
   const deleteNote = async () => {
     const response = await fetch(`${import.meta.env.VITE_API}/delete/${_id}`, {
       method: "DELETE",
@@ -20,14 +41,11 @@ const Note = ({ note, getNotes, customAlert }) => {
         Authorization: `Bearer ${token.token}`,
       },
     });
-
     if (response.status === 204) {
-      customAlert("Post Was Deleted!");
+      customAlert("Post was Deleted!");
       getNotes();
-    } else {
-      customAlert("Not allowed to do it!",true);
     }
-  };
+  }; 
 
   return (
     <div className=" w-1/3 border shadow-lg border-t-4 border-t-teal-600 p-3 rounded h-fit">
@@ -55,7 +73,7 @@ const Note = ({ note, getNotes, customAlert }) => {
                   <TrashIcon
                     width={20}
                     className=" text-red-500 cursor-pointer"
-                    onClick={deleteNote}
+                    onClick={handleDeleteNote}
                   />
                   <Link to={"/edit/" + _id}>
                     <PencilAltIcon width={20} className=" text-teal-600" />
