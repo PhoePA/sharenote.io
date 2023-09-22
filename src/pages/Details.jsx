@@ -56,7 +56,7 @@ const Details = () => {
                 {note.author && (
                   <div className="flex  items-center gap-1">
                     <UserCircleIcon className="w-4 h-4 text-teal-600" />
-                    <h5>{note.author.username}</h5>
+                    <h5>{note.author.username} | { note.author.email}</h5> 
                   </div>
                 )}
                 <div className="flex items-center gap-1">

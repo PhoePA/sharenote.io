@@ -18,7 +18,7 @@ const Index = () => {
     const response = await fetch(
       `${import.meta.env.VITE_API}/notes?page=${pageNum}`
     );
-    const { notes, totalNotes, totalPages } = await response.json();
+    const { notes,  totalPages } = await response.json();
     setTotalPages(totalPages);
     setNotes(notes);
 
@@ -41,17 +41,28 @@ const Index = () => {
     }
   };
 
-  const customAlert = (message) => {
-    toast.success(message, {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
+  const customAlert = (message, error=false) => {
+    if (error) {
+      toast.error(message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+   } toast.success(message, {
+     position: "top-right",
+     autoClose: 3000,
+     hideProgressBar: false,
+     closeOnClick: true,
+     pauseOnHover: true,
+     draggable: true,
+     progress: undefined,
+     theme: "dark",
+   });
   };
 
   return (
